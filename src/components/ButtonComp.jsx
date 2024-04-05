@@ -16,7 +16,7 @@ function ButtonComp({
       isLoading={disabled}
       disabled={disabled}
       type={type}
-      className={`  mx-auto py-2 rounded-lg duration-150 ${
+      className={`  mx-auto py-2 rounded-lg duration-150 m-0 ${
         disabled ? " bg-red-500" : bgColor
       } ${textColor} `}
       {...props}

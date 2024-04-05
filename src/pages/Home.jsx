@@ -4,9 +4,11 @@ import { Container, PostCard } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { ButtonComp } from "../components";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 function Home() {
+  const navigate = useNavigate();
   const userStatus = useSelector((state) => state.auth.status);
   const userData = userStatus
     ? useSelector((state) => state.auth.userData)
@@ -15,8 +17,6 @@ function Home() {
     (post) => post.userId === userData.$id
   );
 
-
-  
   console.log("userdata", userData);
   console.log("post", posts);
   console.log(
@@ -37,22 +37,21 @@ function Home() {
           </p>
           <p className="text-red-500 mb-1">Login/signUp to read blogs</p>
           <div className="flex gap-2 justify-center align-middle">
-            <Link to="/login">
-              <ButtonComp
-                bgColor="bg-blue-500"
-                className="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-              >
-                Log In
-              </ButtonComp>
-            </Link>
-            <Link to="/signup">
-              <ButtonComp
-                bgColor="bg-green-500"
-                className="hover:bg-green-700 text-white font-bold py-2 rounded mr-2"
-              >
-                Sign Up
-              </ButtonComp>
-            </Link>
+            <ButtonComp
+              onClick={() => navigate("/login")}
+              bgColor="bg-blue-500"
+              className="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-0"
+            >
+              Log In
+            </ButtonComp>
+
+            <ButtonComp
+              onClick={() => navigate("/signup")}
+              bgColor="bg-green-500"
+              className="hover:bg-green-700 text-white font-bold py-2 rounded mr-0"
+            >
+              Sign Up
+            </ButtonComp>
           </div>
         </div>
       </div>
