@@ -56,8 +56,12 @@ export default function Post() {
 
           {isAuthor && (
             <div className="absolute flex flex-wrap-reverse gap-1  z-50 right-6 top-6">
-              <Link to={`/edit-post/${post.$id}`}>
-                <ButtonComp bgColor="bg-green-500" className="mr-3">
+              <Link>
+                <ButtonComp
+                  bgColor="bg-green-500"
+                  className="mr-3"
+                  onClick={() => navigate(`/edit-post/${post.$id}`)}
+                >
                   Edit
                 </ButtonComp>
               </Link>
