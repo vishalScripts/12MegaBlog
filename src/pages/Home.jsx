@@ -10,7 +10,6 @@ import "./Home.css";
 
 function Home() {
   const navigate = useNavigate();
-  const navigation = useNavigation()
   const userStatus = useSelector((state) => state.auth.status);
   const userData = userStatus
     ? useSelector((state) => state.auth.userData)
@@ -40,7 +39,7 @@ function Home() {
           <p className="text-red-500 mb-1">Login/signUp to read blogs</p>
           <div className="flex gap-2 justify-center align-middle">
             <ButtonComp
-              onClick={() => navigation("/login")}
+              onClick={() => navigate("/login")}
               bgColor="bg-blue-500"
               className="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-0"
             >
@@ -48,7 +47,7 @@ function Home() {
             </ButtonComp>
 
             <ButtonComp
-              onClick={() => navigation("/signup")}
+              onClick={() => navigate("/signup")}
               bgColor="bg-green-500"
               className="hover:bg-green-700 text-white font-bold py-2 rounded mr-0"
             >
