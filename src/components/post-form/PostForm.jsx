@@ -47,35 +47,39 @@ export default function PostForm({ post }) {
       //   featuredImage: file ? file.$id : undefined,
       // });
 
-      console.log(file);
-      const fileId = file ? file.$id : post.featuredImage;
-      data.featuredImage = fileId;
-      const dbPost = await appwriteService.createPost({
-        ...data,
-        title: capitalizeFirstLetter(data.title),
-        userId: userData.$id,
-      });
+      // console.log(file);
+      // const fileId = file ? file.$id : post.featuredImage;
+      // data.featuredImage = fileId;
+      const delPost = await appwriteService.deletePost(post.$id);
 
-      if (dbPost) {
-        const delPost = await appwriteService.deletePost(post.$id);
-        console.log({ ...data });
-        console.log("slug----------------", data.slug);
-        console.log("db post-----------------", dbPost.$id);
-        if (delPost) {
-          appwriteService
-            .getPosts([])
-            .then((posts) => {
-              if (posts) {
-                // dispatch(addPosts(posts.documents));
-                useUploadPosts(dispatch);
-                return true;
-              }
-            })
-            .catch((error) => {
-              console.error("Error fetching posts:", error);
-              return false;
-            });
-        } else console.log("error is deliting the post while updating");
+      if (delPost) {
+        const dbPost = await appwriteService.createPost({
+          ...data,
+          featuredImage: file ? file.$id : post.featuredImage,
+          title: capitalizeFirstLetter(data.title),
+          userId: userData.$id,
+        });
+
+        if (dbPost) {
+          console.log({ ...data });
+          console.log("slug----------------", data.slug);
+          console.log("db post-----------------", dbPost.$id);
+          if (delPost) {
+            appwriteService
+              .getPosts([])
+              .then((posts) => {
+                if (posts) {
+                  // dispatch(addPosts(posts.documents));
+                  useUploadPosts(dispatch);
+                  return true;
+                }
+              })
+              .catch((error) => {
+                console.error("Error fetching posts:", error);
+                return false;
+              });
+          } else console.log("error is deliting the post while updating");
+        }
         navigate(`/post/${dbPost.$id}`);
       }
     } else {
