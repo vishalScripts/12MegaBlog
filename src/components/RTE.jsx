@@ -81,7 +81,7 @@ const RTE = ({ name, control, label, defaultValue = "" }) => {
         {characterCount > 500 ? "!" : ""} {characterCount} / 500
       </p>
       <div
-        className={`bg-red-100 border flex flex-col text-center left-[50%] -translate-x-[50%] border-red-400 absolute top-32  text-red-700 transition-transform duration-500 ease-in-out-quad px-4 py-3 rounded  ${
+        className={`bg-red-100 border flex flex-col  text-center left-[50%] -translate-x-[50%] border-red-400 absolute top-32  text-red-700 transition-transform duration-500 ease-in-out-quad px-4 py-3 rounded  ${
           characterCount > 500 ? "translate-y-0" : "-translate-y-24"
         } `}
         role="alert"

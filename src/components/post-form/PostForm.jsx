@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ButtonComp, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
@@ -8,11 +8,12 @@ import useUploadPosts from "../../hooks/useUploadPosts";
 import { setPosts } from "../../store/postsSlice";
 
 export default function PostForm({ post }) {
-  const [rteError,setRteError] = useState("")
+  const [rteError, setRteError] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const dispatch = useDispatch();
 
-  const rteRef = useRef(null)
+  const rteRef = useRef(null);
 
   const {
     register,
@@ -41,8 +42,8 @@ export default function PostForm({ post }) {
   const submit = async (data) => {
     if (data.content === "") {
       setRteError("Minimum content should be five letters");
-      return
-    }else if (data.content.length > 500) {
+      return;
+    } else if (data.content.length > 500) {
       setRteError("Maximum content should be 254 letters");
       return;
     }
@@ -109,7 +110,7 @@ export default function PostForm({ post }) {
           console.log("uploaded");
           data.featuredImage = fileId;
           console.log("User id ", userData);
-          console.log(data)
+          console.log(data);
           const dbPost = await appwriteService.createPost({
             ...data,
             title: capitalizeFirstLetter(data.title),
@@ -128,6 +129,19 @@ export default function PostForm({ post }) {
       console.log(error);
     } finally {
       setDisabled(false);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
     }
   };
 
@@ -212,17 +226,28 @@ export default function PostForm({ post }) {
             accept="image/png, image/jpg, image/jpeg, image/gif"
             {...register("image", { required: "*Image is required" })}
             error={errors.image}
+            onChange={handleImageChange}
           />
         )}
 
-        {post && (
-          <div className="w-full mb-4 h-4/6">
+        {post ? (
+          <div className="w-full mb-4 h-[40%]">
             <img
               src={appwriteService.getFilePreview(post.featuredImage)}
               alt={post.title}
               className="rounded-lg object-cover  w-full h-full"
             />
           </div>
+        ) : (
+          imagePreview && (
+            <div className="w-full mb-4 h-[40%] ">
+              <img
+                src={imagePreview}
+                alt="Image Preview"
+                className="rounded-lg object-cover w-full h-full"
+              />
+            </div>
+          )
         )}
         <Select
           options={["active", "inactive"]}
