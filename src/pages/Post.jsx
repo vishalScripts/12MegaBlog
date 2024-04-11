@@ -27,7 +27,6 @@ export default function Post() {
         else navigate("/");
       });
     } else navigate("/");
-    
   }, [postId, navigate]);
 
   const deletePost = () => {
@@ -55,10 +54,10 @@ export default function Post() {
   };
 
   return post ? (
-    <div className="py-8 shadow-2xl rounded-xl">
+    <div className="py-8 shadow-2xl rounded-xl flex items-center justify-center">
       <Container>
         <div
-          className={`w-full h-full flex flex-wrap flex-row ${
+          className={`w-full h-full flex flex-wrap flex-row items-center justify-center ${
             fullImg ? "blur-lg" : ""
           }`}
         >
