@@ -2,8 +2,8 @@ import React from "react";
 import { Container, Logo, LogoutBtn } from "..";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import logo from "../../assets/svg/logo-no-background.svg";
 // import "../../assets/Logo1"
-import logo from "../../assets/Logo1.png";
 
 function Header() {
   const authStatus = useSelector((state) => state.auth.status);
@@ -43,7 +43,7 @@ function Header() {
         <nav className="flex">
           <div className="mr-4">
             <Link to="/">
-              <Logo width="70px" src={logo} />
+              <Logo width="40px" src={logo} />
             </Link>
           </div>
           <ul className="flex ml-auto">

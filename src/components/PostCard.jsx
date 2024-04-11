@@ -7,7 +7,7 @@ function PostCard({ $id, title, featuredImage }) {
   return (
     <Link to={`/post/${$id}`}>
       <Card
-        className="py-4 px-2 h-full shadow-md border-0 hover:border-1 duration-500  border-blue-500"
+        className="py-4 px-2 h-full shadow-md  hover:border-1 border-1 border-transparent duration-300  hover:border-blue-500"
         style={{
           background: "linear-gradient(to top, #c9c9c975, #fff)",
         }}
