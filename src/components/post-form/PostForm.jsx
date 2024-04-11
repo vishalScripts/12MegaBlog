@@ -10,10 +10,13 @@ import { setPosts } from "../../store/postsSlice";
 export default function PostForm({ post }) {
   const [rteError, setRteError] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(
+    post ? appwriteService.getFilePreview(post.featuredImage) : null
+  );
   const dispatch = useDispatch();
 
   const rteRef = useRef(null);
+  console.log(post);
 
   const {
     register,
@@ -26,7 +29,7 @@ export default function PostForm({ post }) {
   } = useForm({
     defaultValues: {
       title: post?.title || "",
-      slug: post?.$id || "",
+      slug: post?.slug || "",
       content: post?.content || "",
       status: post?.status || "active",
     },
@@ -43,8 +46,8 @@ export default function PostForm({ post }) {
     if (data.content === "") {
       setRteError("Minimum content should be five letters");
       return;
-    } else if (data.content.length > 500) {
-      setRteError("Maximum content should be 254 letters");
+    } else if (data.content.length > 1500) {
+      setRteError("Maximum content should be 1500 letters");
       return;
     }
     setDisabled(true);
@@ -58,49 +61,27 @@ export default function PostForm({ post }) {
           appwriteService.deleteFile(post.featuredImage);
         }
 
-        // data.$id = data.slug
+        const dbPost = await appwriteService.updatePost(post.$id, {
+          ...data,
+          featuredImage: file ? file.$id : undefined,
+        });
 
-        // console.log(data)
-        // const dbPost = await appwriteService.updatePost(post.$id, {
-        //   ...data,
-        //   featuredImage: file ? file.$id : undefined,
-        // });
-
-        // console.log(file);
-        // const fileId = file ? file.$id : post.featuredImage;
-        // data.featuredImage = fileId;
-        const delPost = await appwriteService.deletePost(post.$id);
-
-        if (delPost) {
-          const dbPost = await appwriteService.createPost({
-            ...data,
-            featuredImage: file ? file.$id : post.featuredImage,
-            title: capitalizeFirstLetter(data.title),
-            userId: userData.$id,
-          });
-
-          if (dbPost) {
-            console.log({ ...data });
-            console.log("slug----------------", data.slug);
-            console.log("db post-----------------", dbPost.$id);
-            if (delPost) {
-              appwriteService
-                .getPosts([])
-                .then((posts) => {
-                  if (posts) {
-                    // dispatch(addPosts(posts.documents));
-                    useUploadPosts(dispatch);
-                    return true;
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error fetching posts:", error);
-                  return false;
-                });
-            } else console.log("error is deliting the post while updating");
-          }
-          navigate(`/post/${dbPost.$id}`);
-        }
+        if (dbPost) {
+          appwriteService
+            .getPosts([])
+            .then((posts) => {
+              if (posts) {
+                // dispatch(addPosts(posts.documents));
+                useUploadPosts(dispatch);
+                return true;
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching posts:", error);
+              return false;
+            });
+        } else console.log("error is deliting the post while updating");
+        navigate(`/post/${dbPost.$id}`);
       } else {
         const file = await appwriteService.uploadFile(data.image[0]);
 
@@ -217,6 +198,7 @@ export default function PostForm({ post }) {
             accept="image/png, image/jpg, image/jpeg, image/gif"
             {...register("image", { required: !post })}
             error={errors.image}
+            onChange={handleImageChange}
           />
         ) : (
           <Input
@@ -230,24 +212,14 @@ export default function PostForm({ post }) {
           />
         )}
 
-        {post ? (
-          <div className="w-full mb-4 h-[40%]">
+        {imagePreview && (
+          <div className="w-full mb-4 h-[40%] ">
             <img
-              src={appwriteService.getFilePreview(post.featuredImage)}
-              alt={post.title}
-              className="rounded-lg object-cover  w-full h-full"
+              src={imagePreview}
+              alt="Image Preview"
+              className="rounded-lg object-cover w-full h-full"
             />
           </div>
-        ) : (
-          imagePreview && (
-            <div className="w-full mb-4 h-[40%] ">
-              <img
-                src={imagePreview}
-                alt="Image Preview"
-                className="rounded-lg object-cover w-full h-full"
-              />
-            </div>
-          )
         )}
         <Select
           options={["active", "inactive"]}

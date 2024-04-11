@@ -73,21 +73,21 @@ const RTE = ({ name, control, label, defaultValue = "" }) => {
       />
       <p
         className={`absolute top-8 w-[20%] text-center right-2  ${
-          characterCount > 500
+          characterCount > 1500
             ? "text-red-500 border-red-500"
             : "text-[#222f3e]"
         }  text-base font-medium  border-1 border-solid  px-2 border-[#e3e3e3] z-50`}
       >
-        {characterCount > 500 ? "!" : ""} {characterCount} / 500
+        {characterCount > 1500 ? "!" : ""} {characterCount} / 1500
       </p>
       <div
         className={`bg-red-100 border flex flex-col  text-center left-[50%] -translate-x-[50%] border-red-400 absolute top-32  text-red-700 transition-transform duration-500 ease-in-out-quad px-4 py-3 rounded  ${
-          characterCount > 500 ? "translate-y-0" : "-translate-y-24"
+          characterCount > 1500 ? "translate-y-0" : "-translate-y-24"
         } `}
         role="alert"
       >
         <strong className="font-bold">Warning!!</strong>
-        <span className="block sm:inline">Character count exceeds 500</span>
+        <span className="block sm:inline">Character count exceeds 1500</span>
       </div>
     </div>
   );
