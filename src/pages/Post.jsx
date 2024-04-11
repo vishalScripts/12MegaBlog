@@ -129,8 +129,8 @@ export default function Post() {
           </div>
         </div>
         {fullImg ? (
-          <div className="bg-gray-400 duration-200 shadow-2xl bg-opacity-35 w-[95vw] top-4 h-[95vh] m-auto -translate-x-[3.2vh] z-[99] fixed border rounded-xl border-gray-400 border-solid-1 flex items-center justify-center backdrop-blur-lg">
-            <div className="w-[90vw] h-[90vh] flex items-center justify-center">
+          <div className="bg-gray-400 duration-200 shadow-2xl bg-opacity-35 w-[95%] top-4 h-[95%]  left-[2.5%]  z-[99] fixed border rounded-xl border-gray-400 border-solid-1 flex items-center justify-center backdrop-blur-lg">
+            <div className="w-[90%] h-[90%] flex items-center justify-center">
               <img
                 src={appwriteService.getFilePreview(post.featuredImage)}
                 alt={post.title}

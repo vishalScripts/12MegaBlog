@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import useUploadPosts from "../../hooks/useUploadPosts";
 import { setPosts } from "../../store/postsSlice";
+import imgSkelaton from "../../assets/imageSkelaton.jpg";
 
 export default function PostForm({ post }) {
   const [rteError, setRteError] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [imagePreview, setImagePreview] = useState(
-    post ? appwriteService.getFilePreview(post.featuredImage) : null
+    post ? appwriteService.getFilePreview(post.featuredImage) : imgSkelaton
   );
   const dispatch = useDispatch();
 
