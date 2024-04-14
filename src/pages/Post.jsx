@@ -123,7 +123,7 @@ export default function Post() {
               <img
                 src={appwriteService.getFilePreview(post.featuredImage)}
                 alt={post.title}
-                className="object-cover rounded-xl w-full h-full"
+                className="object-contain rounded-xl w-full h-full"
               />
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function Post() {
               <img
                 src={appwriteService.getFilePreview(post.featuredImage)}
                 alt={post.title}
-                className="object-cover rounded-xl w-[auto] h-[90vh]"
+                className="object-contain rounded-xl w-auto h-full"
               />
             </div>
             <div

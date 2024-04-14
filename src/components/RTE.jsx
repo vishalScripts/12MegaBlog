@@ -93,4 +93,4 @@ const RTE = ({ name, control, label, defaultValue = "" }) => {
   );
 };
 
-export default RTE;
+export default React.memo(RTE);

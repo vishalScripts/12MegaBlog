@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 import { useForm } from "react-hook-form";
 import { ButtonComp, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
