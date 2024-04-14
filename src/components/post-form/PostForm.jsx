@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, memo } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ButtonComp, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
@@ -15,10 +15,7 @@ export default function PostForm({ post }) {
     post ? appwriteService.getFilePreview(post.featuredImage) : imgSkelaton
   );
   const dispatch = useDispatch();
-
   const rteRef = useRef(null);
-  console.log(post);
-
   const {
     register,
     handleSubmit,
@@ -57,50 +54,28 @@ export default function PostForm({ post }) {
         const file = data.image[0]
           ? await appwriteService.uploadFile(data.image[0])
           : null;
-
         if (file) {
           appwriteService.deleteFile(post.featuredImage);
         }
-
         const dbPost = await appwriteService.updatePost(post.$id, {
           ...data,
           featuredImage: file ? file.$id : undefined,
         });
-
         if (dbPost) {
-          appwriteService
-            .getPosts([])
-            .then((posts) => {
-              if (posts) {
-                // dispatch(addPosts(posts.documents));
-                useUploadPosts(dispatch);
-                return true;
-              }
-            })
-            .catch((error) => {
-              console.error("Error fetching posts:", error);
-              return false;
-            });
-        } else console.log("error is deliting the post while updating");
-        navigate(`/post/${dbPost.$id}`);
+          useUploadPosts(dispatch);
+          navigate(`/post/${dbPost.$id}`);
+        } else {
+          console.log("Error updating the post");
+        }
       } else {
         const file = await appwriteService.uploadFile(data.image[0]);
-
         if (file) {
-          console.log("uploading");
-          const fileId = file.$id;
-          console.log("uploaded");
-          data.featuredImage = fileId;
-          console.log("User id ", userData);
-          console.log(data);
+          data.featuredImage = file.$id;
           const dbPost = await appwriteService.createPost({
             ...data,
             title: capitalizeFirstLetter(data.title),
             userId: userData.$id,
           });
-
-          console.log(dbPost);
-
           if (dbPost) {
             useUploadPosts(dispatch);
             navigate(`/post/${dbPost.$id}`);
@@ -108,7 +83,7 @@ export default function PostForm({ post }) {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error:", error);
     } finally {
       setDisabled(false);
     }
@@ -128,29 +103,28 @@ export default function PostForm({ post }) {
   };
 
   const slugTransform = useCallback((value) => {
-    if (value && typeof value === "string")
+    if (value && typeof value === "string") {
       return value
         .trim()
         .toLowerCase()
         .replace(/[^a-zA-Z\d\s]+/g, "-")
         .replace(/\s/g, "-");
-
+    }
     return "";
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === "title") {
         setValue("slug", slugTransform(value.title), { shouldValidate: true });
       }
     });
-
     return () => subscription.unsubscribe();
   }, [watch, slugTransform, setValue]);
 
   return (
     <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
-      <div className="w-2/3 px-2">
+      <div className="w-full md:w-2/3 px-2">
         <Input
           label="Title :"
           placeholder="Title"
@@ -181,40 +155,18 @@ export default function PostForm({ post }) {
           defaultValue={getValues("content")}
         />
       </div>
-      <div className="w-1/3 px-2">
-        {/* <Input
+      <div className="w-full md:w-1/3 px-2">
+        <Input
           label="Featured Image :"
           type="file"
           className="mb-4"
           accept="image/png, image/jpg, image/jpeg, image/gif"
           {...register("image", { required: !post })}
           error={errors.image}
-        /> */}
-
-        {post ? (
-          <Input
-            label="Featured Image :"
-            type="file"
-            className="mb-4"
-            accept="image/png, image/jpg, image/jpeg, image/gif"
-            {...register("image", { required: !post })}
-            error={errors.image}
-            onChange={handleImageChange}
-          />
-        ) : (
-          <Input
-            label="Featured Image :"
-            type="file"
-            className="mb-4"
-            accept="image/png, image/jpg, image/jpeg, image/gif"
-            {...register("image", { required: "*Image is required" })}
-            error={errors.image}
-            onChange={handleImageChange}
-          />
-        )}
-
+          onChange={handleImageChange}
+        />
         {imagePreview && (
-          <div className="w-full mb-4 h-[40%] ">
+          <div className="w-full mb-4 h-[40%]">
             <img
               src={imagePreview}
               alt="Image Preview"
@@ -231,7 +183,7 @@ export default function PostForm({ post }) {
         <div id="btn-div" className="flex align-middle justify-center w-full">
           <ButtonComp
             type="submit"
-            className="w-64"
+            className="w-full md:w-64"
             bgColor={post ? "bg-green-500" : undefined}
             disabled={disabled}
           >
@@ -240,7 +192,7 @@ export default function PostForm({ post }) {
                 ? "Updating"
                 : "Update"
               : disabled
-              ? "Submiting"
+              ? "Submitting"
               : "Submit"}
           </ButtonComp>
         </div>
