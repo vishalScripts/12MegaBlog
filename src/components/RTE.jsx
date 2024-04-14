@@ -11,11 +11,14 @@ import {
 
 const RTE = ({ name, control, label, defaultValue = "" }) => {
   const [characterCount, setCharacterCount] = useState(defaultValue.length);
+  const [componentsLoaded, setComponentsLoaded] = useState(false);
 
   useEffect(() => {
-    // Update character count when defaultValue changes
-    setCharacterCount(defaultValue.length);
-  }, [defaultValue]);
+    // Check if Controller and Editor are loaded
+    if (control && defaultValue !== "") {
+      setComponentsLoaded(true);
+    }
+  }, [control, defaultValue]);
 
   const handleEditorChange = (content, editor) => {
     const newCharacterCount = content.length;
@@ -64,6 +67,7 @@ const RTE = ({ name, control, label, defaultValue = "" }) => {
               content_style:
                 "body { font-family: Helvetica, Arial, sans-serif; font-size: 14px }",
             }}
+            onInit={() => setComponentsLoaded(true)} // Editor loaded callback
             onEditorChange={(content, editor) => {
               onChange(content); // Update react-hook-form value
               handleEditorChange(content, editor); // Update character count
@@ -71,24 +75,30 @@ const RTE = ({ name, control, label, defaultValue = "" }) => {
           />
         )}
       />
-      <p
-        className={`absolute top-8 w-[20%] text-center right-2  ${
-          characterCount > 1500
-            ? "text-red-500 border-red-500"
-            : "text-[#222f3e]"
-        }  text-base font-medium  border-1 border-solid  px-2 border-[#e3e3e3] z-50`}
-      >
-        {characterCount > 1500 ? "!" : ""} {characterCount} / 1500
-      </p>
-      <div
-        className={`bg-red-100 border flex flex-col  text-center left-[50%] -translate-x-[50%] border-red-400 absolute top-32  text-red-700 transition-transform duration-500 ease-in-out-quad px-4 py-3 rounded  ${
-          characterCount > 1500 ? "translate-y-0" : "-translate-y-24"
-        } `}
-        role="alert"
-      >
-        <strong className="font-bold">Warning!!</strong>
-        <span className="block sm:inline">Character count exceeds 1500</span>
-      </div>
+      {componentsLoaded && (
+        <>
+          <p
+            className={`absolute top-8 w-[20%] text-center right-2  ${
+              characterCount > 1500
+                ? "text-red-500 border-red-500"
+                : "text-[#222f3e]"
+            }  text-base font-medium  border-1 border-solid  px-2 border-[#e3e3e3] z-50`}
+          >
+            {characterCount > 1500 ? "!" : ""} {characterCount} / 1500
+          </p>
+          <div
+            className={`bg-red-100 border flex flex-col  text-center left-[50%] -translate-x-[50%] border-red-400 absolute top-32  text-red-700 transition-transform duration-500 ease-in-out-quad px-4 py-3 rounded  ${
+              characterCount > 1500 ? "translate-y-0" : "-translate-y-24"
+            } `}
+            role="alert"
+          >
+            <strong className="font-bold">Warning!!</strong>
+            <span className="block sm:inline">
+              Character count exceeds 1500
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 };
